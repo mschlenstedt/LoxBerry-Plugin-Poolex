@@ -83,87 +83,110 @@
 
 <!-- ****************************************************************************************** -->
 
-<TMPL_IF FORM_LANDROID>
+<TMPL_IF FORM_TINYTUYA>
 		<form>
 		
-		<div class="lb_flex-container LANDROID ui-state-disabled">
+		<div class="lb_flex-container TINYTUYA ui-state-disabled">
 			<div	class="lb_flex-item-label">
 				<label	class=	"control-label"
-					for="login"><TMPL_VAR LANDROID.LABEL_LOGIN></label>
+					for="apiKey"><TMPL_VAR TINYTUYA.LABEL_APIKEY></label>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item">
-				<input width="100%" value="" id="login" name="login" type="text" class="textfield">
+				<input width="100%" value="" id="apiKey" name="apiKey" type="text" class="textfield">
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item-help hint">
-				<TMPL_VAR LANDROID.HINT_LOGIN>
+				<TMPL_VAR TINYTUYA.HINT_APIKEY>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 		</div>
 
-		<div class="lb_flex-container LANDROID ui-state-disabled">
+		<div class="lb_flex-container TINYTUYA ui-state-disabled">
 			<div	class="lb_flex-item-label">
 				<label	class=	"control-label"
-					for="password"><TMPL_VAR LANDROID.LABEL_PASSWORD></label>
+					for="apiSecret"><TMPL_VAR TINYTUYA.LABEL_APISECRET></label>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item">
-				<input width="100%" value="" id="password" name="password" type="text" class="textfield">
+				<input width="100%" value="" id="apiSecret" name="apiSecret" type="text" class="textfield">
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item-help hint">
-				<TMPL_VAR LANDROID.HINT_PASSWORD>
+				<TMPL_VAR TINYTUYA.HINT_APISECRET>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 		</div>
 
-		<div class="lb_flex-container LANDROID ui-state-disabled">
+		<div class="lb_flex-container TINYTUYA ui-state-disabled">
 			<div	class="lb_flex-item-label">
 				<label	class=	"control-label"
-					for="type"><TMPL_VAR LANDROID.LABEL_TYPE></label>
+					for="apiDeviceID"><TMPL_VAR TINYTUYA.LABEL_DEVICEID></label>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item">
-				<select name="typr" id="type">
-					<option value="worx"><TMPL_VAR LANDROID.LABEL_WORX></option>
-					<option value="landxcape"><TMPL_VAR LANDROID.LABEL_LANDXCAPE></option>
-					<option value="kress"><TMPL_VAR LANDROID.LABEL_KRESS></option>
+				<input width="100%" value="" id="apiDeviceID" name="apiDeviceID" type="text" class="textfield">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+				<TMPL_VAR TINYTUYA.HINT_DEVICEID>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+
+		<div class="lb_flex-container TINYTUYA ui-state-disabled">
+			<div	class="lb_flex-item-label">
+				<label	class=	"control-label"
+					for="apiRegion"><TMPL_VAR TINYTUYA.LABEL_APIREGION></label>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+				<select name="apiRegion" id="apiRegion">
+					<option value="eu">Central Europe Data Center</option>
+					<option value="eu-w">Western Europe Data Center</option>
+					<option value="cn">China Data Center</option>
+					<option value="us">US - Western America Data Center</option>
+					<option value="us-e">US - Eastern America Data Center</option>
+					<option value="in">India Data Center</option>
 				</select>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item-help hint">
-				<TMPL_VAR LANDROID.HINT_TYPE>
+				<TMPL_VAR TINYTUYA.HINT_APIREGION>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 		</div>
 
-		<div class="lb_flex-container LANDROID ui-state-disabled">
+		<div class="lb_flex-container TINYTUYA ui-state-disabled">
 			<div	class="lb_flex-item-label">
 				<label	class=	"control-label"
-					for="serials"><TMPL_VAR LANDROID.LABEL_SERIALS></label>
+					for="type"><TMPL_VAR TINYTUYA.LABEL_TYPE></label>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item">
-				<textarea width="100%" name="serials" id="serials"></textarea>
+				<select name="typr" id="type">
+					<option value="silverline"><TMPL_VAR TINYTUYA.LABEL_SILVERLINE></option>
+					<option value="qline"><TMPL_VAR TINYTUYA.LABEL_QLINE></option>
+					<option value="vertigo"><TMPL_VAR TINYTUYA.LABEL_VERTIGO></option>
+				</select>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item-help hint">
-				<TMPL_VAR LANDROID.HINT_SERIALS>
+				<TMPL_VAR TINYTUYA.HINT_TYPE>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 		</div>
-	
+
 		<div style="padding: 0px 0px 20px 0px;"></div>
 	
-		<div class="lb_flex-container LANDROID">
+		<div class="lb_flex-container TINYTUYA">
 			<div	class="lb_flex-item-label">
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item">
-			<a href="javascript:saveLANDROID();" id="btnsavelandroid" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check ui-btn-inline" 
-					data-transition="flow" data-inline="true"><TMPL_VAR LANDROID.BUTTON_SAVE></a>
-			<div class="hint" id="landroid_hint">&nbsp;</div>
+			<a href="javascript:saveTINYTUYA();" id="btnsavetinytuya" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check" 
+					data-transition="flow" data-inline="true"><TMPL_VAR TINYTUYA.BUTTON_SAVE></a>
+			<div class="hint" id="tinytuya_hint">&nbsp;</div>
 			</div>
 			<div	class="lb_flex-item-spacer"></div>
 			<div	class="lb_flex-item-help hint">
@@ -230,67 +253,6 @@
 
 <!-- ****************************************************************************************** -->
 
-<TMPL_IF FORM_UPGRADE>
-
-		<center>
-		<p><TMPL_VAR UPGRADE.HINT_LIB></p>
-		</center>
-		<br><br>
-		<form>
-		
-		<div class="lb_flex-container UPGRADE ui-state-disabled">
-			<div	class="lb_flex-item-label">
-				<TMPL_VAR UPGRADE.LABEL_CURRENT>
-			</div>
-			<div	class="lb_flex-item-spacer"></div>
-			<div	class="lb_flex-item">
-				<span id="currentversion"></span>
-			</div>
-			<div	class="lb_flex-item-spacer"></div>
-			<div	class="lb_flex-item-help hint">
-			</div>
-			<div	class="lb_flex-item-spacer"></div>
-		</div>
-
-		<div class="lb_flex-container UPGRADE ui-state-disabled">
-			<div	class="lb_flex-item-label">
-				<TMPL_VAR UPGRADE.LABEL_ONLINE>
-			</div>
-			<div	class="lb_flex-item-spacer"></div>
-			<div	class="lb_flex-item">
-				<span id="availableversion"></span>
-			</div>
-			<div	class="lb_flex-item-spacer"></div>
-			<div	class="lb_flex-item-help hint">
-			</div>
-			<div	class="lb_flex-item-spacer"></div>
-		</div>
-
-		<div style="padding: 0px 0px 20px 0px;"></div>
-	
-		<div class="lb_flex-container UPGRADE">
-			<div	class="lb_flex-item-label">
-			</div>
-			<div	class="lb_flex-item-spacer"></div>
-			<div	class="lb_flex-item">
-			<a href="javascript:upgradeLib();" id="btnupgradelib" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check ui-btn-inline" 
-					data-transition="flow" data-inline="true"><TMPL_VAR UPGRADE.BUTTON_SAVE></a>
-			<div class="hint" id="upgrade_hint">&nbsp;</div>
-			</div>
-			<div	class="lb_flex-item-spacer"></div>
-			<div	class="lb_flex-item-help hint">
-			</div>
-			<div	class="lb_flex-item-spacer"></div>
-		</div>
-		
-		</form>
-	
-	</div>
-
-</TMPL_IF>
-
-<!-- ****************************************************************************************** -->
-
 <TMPL_IF FORM_LOG>
 	<TMPL_VAR LOGLIST>
 </TMPL_IF>
@@ -299,9 +261,8 @@
 
 <script>
 // Main form
-var formupgrade = '<TMPL_VAR FORM_UPGRADE>';
 var formmqtt = '<TMPL_VAR FORM_MQTT>';
-var formlandroid = '<TMPL_VAR FORM_LANDROID>';
+var formtinytuya = '<TMPL_VAR FORM_TINYTUYA>';
 var formlog = '<TMPL_VAR FORM_LOG>';
 
 var secpin = null;
@@ -321,10 +282,6 @@ $(function() {
 
 	setInterval(function(){ update_pids(); }, 3000);
 	update_pids();
-
-	if (formupgrade) {
-		update_ver();
-	}
 
 	getconfig();
 	
@@ -368,63 +325,6 @@ function update_pids()
 
 }
 
-// Update Lib Versions
-function update_ver()
-{
-	$("#currentversion").html("<TMPL_VAR COMMON.HINT_PLEASE_WAIT>");
-	$("#availableversion").html("<TMPL_VAR COMMON.HINT_PLEASE_WAIT>");
-
-	$.ajax( {
-		type: 'POST',
-			data: {
-				ajax: 'getversions',
-				secpin: secpin
-			}
-		} )
-	.done(function(resp) {
-		console.log( "getversions", "success", resp );
-		$("#currentversion").html(resp.versions.current);
-		$("#availableversion").html(resp.versions.available);
-		$(".UPGRADE").removeClass("ui-state-disabled");
-	})
-	.fail(function(resp) {
-		console.log( "getversions", "fail", resp );
-	})
-	.always(function(resp) {
-		console.log( "getversions", "finished", resp );
-	});
-
-}
-
-// Do Lib Upgrade
-function upgradeLib() {
-	$("#upgrade_hint").attr("style", "color:blue").html("<TMPL_VAR UPGRADE.HINT_SAVE_SAVING>");
-	console.log ("Upgrading Library");
-	$.ajax( { 
-			type: 'POST',
-			data: { 
-				ajax: 'upgradelib', 
-				secpin: secpin
-			}
-		} )
-	.fail(function( data ) {
-		console.log( "upgradelib Fail", data );
-		$("#upgrade_hint").attr("style", "color:red").html("<TMPL_VAR UPGRADE.HINT_SAVE_ERROR>: "+data.statusText);
-	})
-	.done(function( data ) {
-		console.log( "upgradelib Success: ", data );
-		if(data.secpinerror) {
-			securePINwrong();
-			return;
-		}
-		$("#upgrade_hint").attr("style", "color:green").html("<TMPL_VAR UPGRADE.HINT_SAVE_OK>");
-		update_ver();
-	})
-	.always(function( data ) {
-		console.log( "upgradelib Finished" );
-	});
-}
-
 // Save MQTT Settings
 function saveMQTT() {
 	$("#mqtt_hint").attr("style", "color:blue").html("<TMPL_VAR MQTT.HINT_SAVE_SAVING>");
@@ -455,35 +355,36 @@ function saveMQTT() {
 	});
 }
 
-// Save LANDROID Settings
-function saveLANDROID() {
-	$("#landroid_hint").attr("style", "color:blue").html("<TMPL_VAR LANDROID.HINT_SAVE_SAVING>");
+// Save TinyTuya Settings
+function saveTINYTUYA() {
+	$("#tinytuya_hint").attr("style", "color:blue").html("<TMPL_VAR TINYTUYA.HINT_SAVE_SAVING>");
 	$.ajax( { 
 			type: 'POST',
 			data: { 
-				ajax: 'savelandroid', 
-				login: $('#login').val(),
-				password: $('#password').val(),
+				ajax: 'savetinytuya', 
+				apiKey: $('#apiKey').val(),
+				apiSecret: $('#apiSecret').val(),
+				apiRegion: $('#apiRegion').val(),
+				apiDeviceID: $('#apiDeviceID').val(),
 				type: $('#type').val(),
-				serials: $('#serials').val(),
 				secpin: secpin
 			}
 		} )
 	.fail(function( data ) {
-		console.log( "savelandroid Fail", data );
-		$("#landroid_hint").attr("style", "color:red").html("<TMPL_VAR LANDROID.HINT_SAVE_ERROR>: "+data.statusText);
+		console.log( "savetinytuya Fail", data );
+		$("#tinytuya_hint").attr("style", "color:red").html("<TMPL_VAR TINYTUYA.HINT_SAVE_ERROR>: "+data.statusText);
 	})
 	.done(function( data ) {
-		console.log( "savelandroid Success: ", data );
+		console.log( "savetinytuya Success: ", data );
 		if(data.secpinerror) {
 			securePINwrong();
 			return;
 		}
-		$("#landroid_hint").attr("style", "color:green").html("<TMPL_VAR LANDROID.HINT_SAVE_OK>");
+		$("#tinytuya_hint").attr("style", "color:green").html("<TMPL_VAR TINYTUYA.HINT_SAVE_OK>");
 		getconfig();
 	})
 	.always(function( data ) {
-		console.log( "savelandroid Finished" );
+		console.log( "savetinytuya Finished" );
 	});
 }
 
@@ -583,13 +484,13 @@ function stopBridge() {
 function getconfig() {
 	// Get Config
 	
-	if ( formlandroid ) {
-		console.log( "Get Config for Landroid form" );
-		var form = 'config'; // This will be changed to config.json later on in CGI
+	if ( formtinytuya ) {
+		console.log( "Get Config for TinyTuya form" );
+		var form = 'tinytuya'; // This will be changed to tinytuya.json later on in CGI
 	}
 	if ( formmqtt ) {
 		console.log( "Get Config for MQTT form" );
-		var form = 'config'; // This will be changed to config.json later on in CGI
+		var form = 'pluginconfig'; // This will be changed to config.json later on in CGI
 	}
 	if ( formlog ) {
 		console.log( "Get Config for form not needed" );
@@ -620,50 +521,57 @@ function getconfig() {
 				console.log( "Parse Item for MQTT form" );
 				// Fill the form with json data retrieved from the ajax getconfig call
 				if ( data.error || jQuery.isEmptyObject(data)) {
-					console.log("config.json is empty, does not exist or is invalid.");
+					console.log("pluginconfig.json is empty, does not exist or is invalid.");
 				}
-				if(data.mower[0].topic) {
-					$("#topic").val(data.mower[0].topic);
+				if(data.topic) {
+					$("#topic").val(data.topic);
 				} else {
-					$("#topic").val('landroid');
+					$("#topic").val('poolex');
 				}
 			};
 
-			if ( formlandroid ) {
-				console.log( "Parse Item for Landroid form" );
+			if ( formtinytuya ) {
+				console.log( "Parse Item for TinyTuya form" );
 				// Fill the form with json data retrieved from the ajax getconfig call
 				if ( data.error || jQuery.isEmptyObject(data)) {
-					console.log("config.json is empty, does not exist or is invalid.");
+					console.log("tinytuya.json is empty, does not exist or is invalid.");
 				}
-				if(data.cloud.email) {
-					$("#login").val(data.cloud.email);
+				if(data.apiKey) {
+					$("#apiKey").val(data.apiKey);
 				} else {
-					$("#login").val('');
+					$("#lpiKey").val('');
 				}
-				if(data.cloud.pwd) {
-					$("#password").val(data.cloud.pwd);
+				if(data.apiSecret) {
+					$("#apiSecret").val(data.apiSecret);
 				} else {
-					$("#password").val('');
+					$("#apiSecret").val('');
 				}
-				if (data.cloud.type === "worx") {
-					$("#type").val("worx").change();
-				} else if (data.cloud.type === "landxcape") {
-					$("#type").val("landxcape").change();
-				} else if (data.cloud.type === "kress") {
-					$("#type").val("kress").change();
+				if(data.apiDeviceID) {
+					$("#apiDeviceID").val(data.apiDeviceID);
+				} else {
+					$("#apiDeviceID").val('');
+				}
+				if (data.type === "silverline") {
+					$("#type").val("silverline").change();
+				} else if (data.type === "qline") {
+					$("#type").val("qline").change();
+				} else if (data.type === "vertigo") {
+					$("#type").val("vertigo").change();
 				} 
-				var serials = "";
-				$(data.mower).each(function(i,val) {
-					$.each(val, function(key, value) {
-						if (key === "sn") {
-							serials = serials + value + "\n";
-						}
-					});
-				});
-				serials = serials.replace(/\s+$/g, '');
-				$("#serials").val(serials.toString());
-				$("#serials").trigger('change');
-				$(".LANDROID").removeClass("ui-state-disabled");
+				if (data.apiRegion === "eu") {
+					$("#apiRegion").val("eu").change();
+				} else if (data.apiRegion === "eu-w") {
+					$("#apiRegion").val("eu-w").change();
+				} else if (data.apiRegion === "cn") {
+					$("#apiRegion").val("cn").change();
+				} else if (data.apiRegion === "us") {
+					$("#apiRegion").val("us").change();
+				} else if (data.apiRegion === "us-e") {
+					$("#apiRegion").val("us-e").change();
+				} else if (data.apiRegion === "in") {
+					$("#apiRegion").val("in").change();
+				} 
+				$(".TINYTUYA").removeClass("ui-state-disabled");
 			};
 		})
 		.always(function( data ) {

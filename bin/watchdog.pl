@@ -10,7 +10,7 @@ use strict;
 #use Data::Dumper;
 
 # Version of this script
-my $version = "0.5.0";
+my $version = "0.1.0";
 
 # Globals
 my $error;
@@ -20,7 +20,7 @@ my $action;
 # Logging
 # Create a logging object
 my $log = LoxBerry::Log->new (  name => "watchdog",
-package => 'landroid-ng',
+package => 'poolex',
 logdir => "$lbplogdir",
 addtime => 1,
 );
@@ -40,22 +40,13 @@ if ($verbose) {
 LOGSTART "Starting Watchdog";
 
 # Lock
-my $status = LoxBerry::System::lock(lockfile => 'landroid-ng-watchdog', wait => 120);
+my $status = LoxBerry::System::lock(lockfile => 'poolex-watchdog', wait => 120);
 if ($status) {
     print "$status currently running - Quitting.";
     exit (1);
 }
 
 # Read Configuration
-my $cfgfile = $lbpconfigdir . "/config.json";
-my $jsonobj = LoxBerry::JSON->new();
-my $cfg = $jsonobj->open(filename => $cfgfile);
-if ( !%$cfg ) {
-	LOGERR "Cannot open configuration $cfgfile. Exiting.";
-	exit (1);
-}
-
-# Set Defaults from config
 
 # Todo
 if ( $action eq "start" ) {
@@ -110,52 +101,28 @@ sub start
 		unlink("$lbpconfigdir/bridge_stopped.cfg");
 	}
 
-	# Save defaults
-	my $mqttcred = LoxBerry::IO::mqtt_connectiondetails();
-	my $cred;
-	if ( $mqttcred->{brokeruser} && $mqttcred->{brokerpass} ) {
-		$cred = "$mqttcred->{brokeruser}" . ":" . $mqttcred->{brokerpass} . "@";
-	}
-	my $mqtturl = "mqtt://" . $cred . $mqttcred->{brokeraddress};
-	my $oldurl = $cfg->{'mqtt'}->{'url'};
-	if ( $oldurl ne $mqtturl ) {
-		$cfg->{'mqtt'}->{'url'} = $mqtturl;
-		$jsonobj->write();
-	}
-	my $loglevel = $log->loglevel();
-	my $nodejsloglevel = "debug";
-	if ($loglevel > 6) {
-		$nodejsloglevel = "debug";
-	} elsif ( $loglevel > 5) {
-		$nodejsloglevel = "info";
-	} elsif ( $loglevel > 3) {
-		$nodejsloglevel = "warn";
-	} elsif ( $loglevel > 2) {
-		$nodejsloglevel = "error";
-	} else {
-		$nodejsloglevel = "silent";
-	}
-	my $oldnodejsloglevel = $cfg->{'logLevel'};
-	if ( $oldnodejsloglevel ne $nodejsloglevel ) {
-		$cfg->{'logLevel'} = $nodejsloglevel;
-		$jsonobj->write();
-	}
-
 	LOGINF "START called...";
 	LOGINF "Starting Bridge...";
 	# Logging for Bridge
 	# Create a logging object
 	my $logtwo = LoxBerry::Log->new (  name => "bridge",
-	package => 'landroid-ng',
+	package => 'poolex',
 	logdir => "$lbplogdir",
 	addtime => 1,
 	);
+	# Loglevel
+	my $loglevel = "INFO";
+	$loglevel = "CRITICAL" if ($log->loglevel() <= 2);
+	$loglevel = "ERROR" if ($log->loglevel() eq 3);
+	$loglevel = "WARNING" if ($log->loglevel() eq 4 || $log->loglevel() eq 5);
+	$loglevel = "DEBUG" if ($log->loglevel() eq 6 || $log->loglevel() eq 7);
+	# Create Log
 	$logtwo->LOGSTART("Bridge started.");
 	$logtwo->INF("Bridge will be started.");
 	my $bridgelogfile = $logtwo->filename();
-	system ("pkill -f mqtt-landroid-bridge/bridge.js");
+	system ("pkill -f $lbpbindir/bridge.py");
 	sleep 2;
-	system ("node $lbpdatadir/mqtt-landroid-bridge/bridge.js >> $bridgelogfile 2>&1 &");
+	system ("python3 $lbpbindir/bridge.py --logfile=$bridgelogfile --loglevel=$loglevel 2>&1 &");
 
 	LOGOK "Done.";
 
@@ -168,7 +135,7 @@ sub stop
 
 	LOGINF "STOP called...";
 	LOGINF "Stopping Bridge...";
-	system ("pkill -f mqtt-landroid-bridge/bridge.js");
+	system ("pkill -f $lbpbindir/bridge.py");
 
 	my $response = LoxBerry::System::write_file("$lbpconfigdir/bridge_stopped.cfg", "1");
 
@@ -201,17 +168,17 @@ sub check
 	}
 	
 	# Creating tmp file with failed checks
-	if (!-e "/dev/shm/landroid-ng-watchdog-fails.dat") {
-		my $response = LoxBerry::System::write_file("/dev/shm/landroid-ng-watchdog-fails.dat", "0");
+	if (!-e "/dev/shm/poolex-watchdog-fails.dat") {
+		my $response = LoxBerry::System::write_file("/dev/shm/poolex-watchdog-fails.dat", "0");
 	}
 
-	my ($exitcode, $output)  = execute ("pgrep -f mqtt-landroid-bridge/bridge.js");
+	my ($exitcode, $output)  = execute ("pgrep -f $lbpbindir/bridge.py");
 	if ($exitcode != 0) {
 		LOGWARN "Bridge seems to be dead - Error $exitcode";
-		my $fails = LoxBerry::System::read_file("/dev/shm/landroid-ng-watchdog-fails.dat");
+		my $fails = LoxBerry::System::read_file("/dev/shm/poolex-watchdog-fails.dat");
 		chomp ($fails);
 		$fails++;
-		my $response = LoxBerry::System::write_file("/dev/shm/landroid-ng-watchdog-fails.dat", "$fails");
+		my $response = LoxBerry::System::write_file("/dev/shm/poolex-watchdog-fails.dat", "$fails");
 		if ($fails > 9) {
 			LOGERR "Too many failures. Will stop watchdogging... Check your configuration and start bridge manually.";
 		} else {
@@ -219,7 +186,7 @@ sub check
 		}
 	} else {
 		LOGOK "Bridge seems to be alive. Nothing to do.";
-		my $response = LoxBerry::System::write_file("/dev/shm/landroid-ng-watchdog-fails.dat", "0");
+		my $response = LoxBerry::System::write_file("/dev/shm/poolex-watchdog-fails.dat", "0");
 	}
 
 	return(0);
@@ -232,6 +199,6 @@ sub check
 END {
 
 	LOGEND "This is the end - My only friend, the end...";
-	LoxBerry::System::unlock(lockfile => 'landroid-ng-watchdog');
+	LoxBerry::System::unlock(lockfile => 'poolex-watchdog');
 
 }

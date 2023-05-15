@@ -47,7 +47,8 @@ my $template;
 my %L;
 
 # Globals 
-my $CFGFILE = $lbpconfigdir . "/config.json";
+my $CFGFILE = $lbpconfigdir . "/pluginconfig.json";
+my $TTCFGFILE = $lbpconfigdir . "/tinytuya.json";
 my %pids;
 my %versions;
 
@@ -109,20 +110,13 @@ if( $q->{ajax} ) {
 		print JSON->new->canonical(1)->encode(\%response);
 	}
 	
-	# Save Landroid Settings
-	if( $q->{ajax} eq "savelandroid" ) {
-		LOGINF "P$$ savelandroid: savelandroid was called.";
-		$response{error} = &savelandroid();
+	# Save TinyTuya Settings
+	if( $q->{ajax} eq "savetinytuya" ) {
+		LOGINF "P$$ savetinytuya: savetinytuya was called.";
+		$response{error} = &savetinytuya();
 		print JSON->new->canonical(1)->encode(\%response);
 	}
 
-	# Upgrade Lib
-	if( $q->{ajax} eq "upgradelib" ) {
-		LOGINF "P$$ upgradelib: upgradelib was called.";
-		$response{error} = &upgradelib();
-		print JSON->new->canonical(1)->encode(\%response);
-	}
-	
 	# Get config
 	if( $q->{ajax} eq "getconfig" ) {
 		LOGINF "P$$ getconfig: Getconfig was called.";
@@ -160,14 +154,6 @@ if( $q->{ajax} ) {
 		print JSON->new->canonical(1)->encode(\%response);
 	}
 
-	# GetVersions
-	if( $q->{ajax} eq "getversions" ) {
-		LOGINF "P$$ getversions: getversions was called.";
-		versions();
-		$response{versions} = \%versions;
-		print JSON->new->canonical(1)->encode(\%response);
-	}
-
 	# Restart services
 	if( $q->{ajax} eq "restartbridge" ) {
 		$response{error} = &restartbridge();
@@ -199,7 +185,7 @@ if( $q->{ajax} ) {
 	#	addtime => 1
 	#);
 
-	LOGSTART "Landroid WebIf";
+	LOGSTART "Poolex WebIf";
 	
 	# Init Template
 	$template = HTML::Template->new(
@@ -211,11 +197,10 @@ if( $q->{ajax} ) {
 	%L = LoxBerry::System::readlanguage($template, "language.ini");
 	
 	# Default is LabCom form
-	$q->{form} = "landroid" if !$q->{form};
+	$q->{form} = "tinytuya" if !$q->{form};
 
-	if ($q->{form} eq "landroid") { &form_landroid() }
+	if ($q->{form} eq "tinytuya") { &form_tinytuya() }
 	elsif ($q->{form} eq "mqtt") { &form_mqtt() }
-	elsif ($q->{form} eq "upgrade") { &form_upgrade() }
 	elsif ($q->{form} eq "log") { &form_log() }
 
 	# Print the form
@@ -229,9 +214,9 @@ exit;
 # Form: LANDROID
 ##########################################################################
 
-sub form_landroid
+sub form_tinytuya
 {
-	$template->param("FORM_LANDROID", 1);
+	$template->param("FORM_TINYTUYA", 1);
 	return();
 }
 
@@ -243,17 +228,6 @@ sub form_landroid
 sub form_mqtt
 {
 	$template->param("FORM_MQTT", 1);
-	return();
-}
-
-
-##########################################################################
-# Form: UPGRADE
-##########################################################################
-
-sub form_upgrade
-{
-	$template->param("FORM_UPGRADE", 1);
 	return();
 }
 
@@ -278,17 +252,13 @@ sub form_print
 	# Navbar
 	our %navbar;
 
-	$navbar{10}{Name} = "$L{'COMMON.LABEL_LANDROID'}";
-	$navbar{10}{URL} = 'index.cgi?form=landroid';
-	$navbar{10}{active} = 1 if $q->{form} eq "landroid";
+	$navbar{10}{Name} = "$L{'COMMON.LABEL_TINYTUYA'}";
+	$navbar{10}{URL} = 'index.cgi?form=tinytuya';
+	$navbar{10}{active} = 1 if $q->{form} eq "tinytuya";
 	
 	$navbar{30}{Name} = "$L{'COMMON.LABEL_MQTT'}";
 	$navbar{30}{URL} = 'index.cgi?form=mqtt';
 	$navbar{30}{active} = 1 if $q->{form} eq "mqtt";
-
-	$navbar{40}{Name} = "$L{'COMMON.LABEL_UPGRADE'}";
-	$navbar{40}{URL} = 'index.cgi?form=upgrade';
-	$navbar{40}{active} = 1 if $q->{form} eq "upgrade";
 
 	$navbar{99}{Name} = "$L{'COMMON.LABEL_LOG'}";
 	$navbar{99}{URL} = 'index.cgi?form=log';
@@ -336,18 +306,8 @@ sub savemqtt
 	my $jsonobj = LoxBerry::JSON->new();
 	my $cfg = $jsonobj->open(filename => $CFGFILE);
 	my $i = 0;
-	$q->{topic} = "landroid" if ( $q->{topic} eq "" ) ;
-	foreach ( @{$cfg->{'mower'}} ) {
-		$cfg->{'mower'}[$i]->{'topic'} = $q->{topic};
-		$i++;
-	}
-	#my $mqttcred = LoxBerry::IO::mqtt_connectiondetails();
-	#my $cred;
-	#if ( $mqttcred->{brokeruser} && $mqttcred->{brokerpass} ) {
-	#	$cred = "$mqttcred->{brokeruser}" . ":" . $mqttcred->{brokerpass} . "@";
-	#}
-	#my $mqtturl = "mqtt://" . $cred . $mqttcred->{brokeraddress};
-	#$cfg->{'mqtt'}->{'url'} = $mqtturl;
+	$q->{topic} = "poolex" if ( $q->{topic} eq "" ) ;
+	$cfg->{'topic'} = $q->{topic};
 	$jsonobj->write();
 	
 	# Save mqtt_subscriptions.cfg for MQTT Gateway
@@ -364,49 +324,29 @@ sub savemqtt
 	return ($errors);
 }
 
-sub savelandroid
+sub savetinytuya
 {
 	my $errors;
+	# TuyaConfig
 	my $jsonobj = LoxBerry::JSON->new();
-	my $cfg = $jsonobj->open(filename => $CFGFILE);
-	$cfg->{cloud}->{email} = $q->{login};
-	$cfg->{cloud}->{pwd} = $q->{password};
-	$cfg->{cloud}->{type} = $q->{type};
-	my  @serials = split /\n/, $q->{serials};
-	my $topic;
-	$topic = $cfg->{'mower'}[0]->{'topic'} if ($cfg->{'mower'}[0]->{'topic'});
-	$topic = "landroid" if (!$topic);
-	my @mowers;
-	foreach ( @serials ) {
-		next if $_ eq "";
-		my %mower = (
-			sn => "$_",
-			topic => "$topic",
-		);
-		push @mowers, \%mower;
-	}
-	$cfg->{mower} = \@mowers;
+	my $cfg = $jsonobj->open(filename => $TTCFGFILE);
+	$cfg->{apiKey} = $q->{apiKey};
+	$cfg->{apiSecret} = $q->{apiSecret};
+	$cfg->{apiRegion} = $q->{apiRegion};
+	$cfg->{apiDeviceID} = $q->{apiDeviceID};
+	$cfg->{type} = $q->{type};
 	$jsonobj->write();
+	eval {
+		system("$lbpbindir/wizard.sh >/dev/null 2>&1");
+	};
+
 	return ($errors);
 }
 
 sub pids
 {
-	$pids{'bridge'} = trim(`pgrep -f mqtt-landroid-bridge/bridge.js`) ;
+	$pids{'bridge'} = trim(`pgrep -f $lbpbindir/bridge.py`) ;
 	return();
-}
-
-sub versions
-{
-	$versions{'current'} = execute("$lbpbindir/upgrade_bridge.sh current");
-	$versions{'available'} = execute("$lbpbindir/upgrade_bridge.sh available");
-	return();
-}
-
-sub upgradelib
-{
-	my ($exitcode, $output) = execute("$lbpbindir/upgrade_bridge.sh");
-	return($exitcode);
 }
 
 sub restartbridge

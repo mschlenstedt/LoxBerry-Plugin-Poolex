@@ -1,14 +1,16 @@
 #!/bin/bash
- 
-# Shell script which is executed by bash *AFTER* complete installation is done
-# (but *BEFORE* postupdate). Use with caution and remember, that all systems may
-# be different!
+
+# Shell script which is executed by bash *BEFORE* installation is started
+# (*BEFORE* preinstall and *BEFORE* preupdate). Use with caution and remember,
+# that all systems may be different!
 #
 # Exit code must be 0 if executed successfull. 
 # Exit code 1 gives a warning but continues installation.
 # Exit code 2 cancels installation.
 #
-# Will be executed as user "loxberry".
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Will be executed as user "root".
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 # You can use all vars from /etc/environment in this script.
 #
@@ -23,7 +25,7 @@
 # <WARNING> This is a warning!"
 # <ERROR> This is an error!"
 # <FAIL> This is a fail!"
- 
+
 # To use important variables from command line use the following code:
 COMMAND=$0    # Zero argument is shell command
 PTEMPDIR=$1   # First argument is temp folder during install
@@ -33,9 +35,9 @@ PVERSION=$4   # Forth argument is Plugin version
 #LBHOMEDIR=$5 # Comes from /etc/environment now. Fifth argument is
               # Base folder of LoxBerry
 PTEMPPATH=$6  # Sixth argument is full temp path during install (see also $1)
- 
+
 # Combine them with /etc/environment
-PHTMLAUTH=$LBPHTMLAUTH/$PDIR
+PCGI=$LBPCGI/$PDIR
 PHTML=$LBPHTML/$PDIR
 PTEMPL=$LBPTEMPL/$PDIR
 PDATA=$LBPDATA/$PDIR
@@ -43,24 +45,29 @@ PLOG=$LBPLOG/$PDIR # Note! This is stored on a Ramdisk now!
 PCONFIG=$LBPCONFIG/$PDIR
 PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
- 
-echo "<INFO> Installing latest TinyTuya"
 
-repo="jasonacox/tinytuya"
+echo "<INFO> Installation as root user started."
 
-repourl="https://github.com/$repo.git"
-rm -rf $PDATA/tinytuya
-git clone $repourl $PDATA/tinytuya 2>&1
+echo "<INFO> Start installing pip3..."
+yes | python3 -m pip install --upgrade pip
+INSTALLED=$(pip3 list --format=columns | grep "pip" | grep -v grep | wc -l)
+if [ ${INSTALLED} -ne "0" ]; then
+	echo "<OK> Python Pip installed successfully."
+else
+	echo "<WARNING> Python Pip installation failed! The plugin will not work without."
+	echo "<WARNING> Giving up."
+	exit 2;
+fi 
 
-# Symlink config
-#echo "<INFO> Symlinking config file..."
-#rm $PDATA/mqtt-landroid-bridge/config.json
-#ln -sv $PCONFIG/config.json $PDATA/mqtt-landroid-bridge/config.json 2>&1
+echo "<INFO> Start installing Python TinyTuya..."
+yes | python3 -m pip install tinytuya
+INSTALLED=$(pip3 list --format=columns | grep "tinytuya" | grep -v grep | wc -l)
+if [ ${INSTALLED} -ne "0" ]; then
+	echo "<OK> Python TinyTuya installed successfully."
+else
+	echo "<WARNING> Python TinyTuya installation failed! The plugin will not work without."
+	echo "<WARNING> Giving up."
+	exit 2;
+fi 
 
-# Install
-#echo "<INFO> Installing..."
-#cd $PDATA/tinytuya
-
-
-# Exit with Status 0
 exit 0
