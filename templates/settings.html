@@ -1,0 +1,674 @@
+<!-- SecurePIN --> 
+<div id="securepin_block" style="margin: 0 auto; width:350px; display:none">
+	<TMPL_VAR SECUREPIN.ENTER_SECUREPIN>
+	<input name="securepin" id="securepin" type="text">
+	<button class="ui-btn ui-btn-icon-right ui-corner-all" id="check_securepin" data-inline="true"><TMPL_VAR COMMON.BUTTON_OK></button>
+	
+	<div class="hint" id="check_hint" style="padding: 5px 5px 5px 5px;"></div>
+	<br>
+	<div class="path" style="background: #FF8080; font-color: black; text-shadow: none; border: black 1px solid; padding: 5px;">
+		<p style="font-weight: bold;">
+			<TMPL_VAR SECUREPIN.WARNING_TITLE>
+		</p>
+		<hr>
+		<p>
+			<TMPL_VAR SECUREPIN.PREVENT_SPY>
+		</p>
+	</div>
+</div>
+
+<!-- ****************************************************************************************** -->
+
+<style>
+	.listtable td
+	{
+		vertical-align	:middle;
+		text-align	:center;
+	}
+	.listtable td img
+	{
+		padding		:5px;
+	}
+	.lb_flex-item 
+	{	
+		min-width	:450px;
+		width		:450px;
+		max-width	:450px;
+		flex-wrap	:nowrap;
+		margin-top	:-10px;  
+	}
+	.lb_flex-item-help 
+	{
+		min-width	:100px;
+		width		:100%;
+		position	:relative;
+		margin-left	:10px;
+	}
+	.mqtttable {
+		vertical-align: middle;
+		text-align: left;
+		/* font-size: 90%; */
+		border-collapse: collapse;
+		border: 1px solid grey;
+		padding: 10px;
+		width: 100%;
+		
+	}
+	.mqtttable_vicol, .mqtttable_desccol {
+		border: 1px solid grey;
+		padding: 10px;
+	}
+	.mqtttable_headrow {
+	
+	}
+
+</style>
+
+	<div id="main" style="visibility:hidden"> <!-- style="display:none;" --> 
+
+		<center>
+		<div style="display:flex;align-items:center;justify-content:center;width:100%">
+			<center>
+			<span id="bridgestate"></span>
+			&nbsp; &nbsp; &nbsp; &nbsp;
+			<a href="javascript:restartBridge();" id="btnrestartbridge" data-role="button" data-inline="true" data-icon="refresh" data-mini="true"
+						data-transition="flow"><TMPL_VAR COMMON.BUTTON_RESTART></a>
+			<a href="javascript:stopBridge();" id="btnrestopbridge" data-role="button" data-inline="true" data-icon="delete" data-mini="true"
+						data-transition="flow"><TMPL_VAR COMMON.BUTTON_STOP></a>
+			</center>
+		</div>
+		</center>
+		<hr>
+		<br>
+
+<!-- ****************************************************************************************** -->
+
+<TMPL_IF FORM_LANDROID>
+		<form>
+		
+		<div class="lb_flex-container LANDROID ui-state-disabled">
+			<div	class="lb_flex-item-label">
+				<label	class=	"control-label"
+					for="login"><TMPL_VAR LANDROID.LABEL_LOGIN></label>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+				<input width="100%" value="" id="login" name="login" type="text" class="textfield">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+				<TMPL_VAR LANDROID.HINT_LOGIN>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+
+		<div class="lb_flex-container LANDROID ui-state-disabled">
+			<div	class="lb_flex-item-label">
+				<label	class=	"control-label"
+					for="password"><TMPL_VAR LANDROID.LABEL_PASSWORD></label>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+				<input width="100%" value="" id="password" name="password" type="text" class="textfield">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+				<TMPL_VAR LANDROID.HINT_PASSWORD>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+
+		<div class="lb_flex-container LANDROID ui-state-disabled">
+			<div	class="lb_flex-item-label">
+				<label	class=	"control-label"
+					for="type"><TMPL_VAR LANDROID.LABEL_TYPE></label>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+				<select name="typr" id="type">
+					<option value="worx"><TMPL_VAR LANDROID.LABEL_WORX></option>
+					<option value="landxcape"><TMPL_VAR LANDROID.LABEL_LANDXCAPE></option>
+					<option value="kress"><TMPL_VAR LANDROID.LABEL_KRESS></option>
+				</select>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+				<TMPL_VAR LANDROID.HINT_TYPE>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+
+		<div class="lb_flex-container LANDROID ui-state-disabled">
+			<div	class="lb_flex-item-label">
+				<label	class=	"control-label"
+					for="serials"><TMPL_VAR LANDROID.LABEL_SERIALS></label>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+				<textarea width="100%" name="serials" id="serials"></textarea>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+				<TMPL_VAR LANDROID.HINT_SERIALS>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+	
+		<div style="padding: 0px 0px 20px 0px;"></div>
+	
+		<div class="lb_flex-container LANDROID">
+			<div	class="lb_flex-item-label">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+			<a href="javascript:saveLANDROID();" id="btnsavelandroid" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check ui-btn-inline" 
+					data-transition="flow" data-inline="true"><TMPL_VAR LANDROID.BUTTON_SAVE></a>
+			<div class="hint" id="landroid_hint">&nbsp;</div>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+		
+		</form>
+	
+	</div>
+
+</TMPL_IF>
+
+<!-- ****************************************************************************************** -->
+
+<TMPL_IF FORM_MQTT>
+		<form>
+		
+		<div class="lb_flex-container MQTT">
+			<div	class="lb_flex-item-label">
+				<label	class=	"control-label"
+					for="topic"><TMPL_VAR MQTT.LABEL_MQTTTopic></label>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+				<input width="100%" value="" id="topic" name="topic" type="text" class="textfield" 
+				data-validation-rule="^(?!.*//.*)[^\+#]+$" data-validation-error-msg="<TMPL_VAR MQTT.MSG_VALINVALID_MQTTTOPIC>">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+				<TMPL_VAR MQTT.HINT_MQTTTOPIC>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+	
+	
+		<div style="padding: 0px 0px 20px 0px;"></div>
+	
+		<div class="lb_flex-container MQTT">
+			<div	class="lb_flex-item-label">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+			<a href="javascript:saveMQTT();" id="btnsavemqtt" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check" 
+						data-transition="flow"><TMPL_VAR MQTT.BUTTON_SAVE></a>
+			<div class="hint" id="mqtt_hint">&nbsp;</div>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+		
+		</form>
+	
+		<script>
+			// Validation
+			validate_enable('#topic');
+		</script>
+	
+	</div>
+
+</TMPL_IF>
+
+<!-- ****************************************************************************************** -->
+
+<TMPL_IF FORM_UPGRADE>
+
+		<center>
+		<p><TMPL_VAR UPGRADE.HINT_LIB></p>
+		</center>
+		<br><br>
+		<form>
+		
+		<div class="lb_flex-container UPGRADE ui-state-disabled">
+			<div	class="lb_flex-item-label">
+				<TMPL_VAR UPGRADE.LABEL_CURRENT>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+				<span id="currentversion"></span>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+
+		<div class="lb_flex-container UPGRADE ui-state-disabled">
+			<div	class="lb_flex-item-label">
+				<TMPL_VAR UPGRADE.LABEL_ONLINE>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+				<span id="availableversion"></span>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+
+		<div style="padding: 0px 0px 20px 0px;"></div>
+	
+		<div class="lb_flex-container UPGRADE">
+			<div	class="lb_flex-item-label">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item">
+			<a href="javascript:upgradeLib();" id="btnupgradelib" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check ui-btn-inline" 
+					data-transition="flow" data-inline="true"><TMPL_VAR UPGRADE.BUTTON_SAVE></a>
+			<div class="hint" id="upgrade_hint">&nbsp;</div>
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+			<div	class="lb_flex-item-help hint">
+			</div>
+			<div	class="lb_flex-item-spacer"></div>
+		</div>
+		
+		</form>
+	
+	</div>
+
+</TMPL_IF>
+
+<!-- ****************************************************************************************** -->
+
+<TMPL_IF FORM_LOG>
+	<TMPL_VAR LOGLIST>
+</TMPL_IF>
+
+<!-- ****************************************************************************************** -->
+
+<script>
+// Main form
+var formupgrade = '<TMPL_VAR FORM_UPGRADE>';
+var formmqtt = '<TMPL_VAR FORM_MQTT>';
+var formlandroid = '<TMPL_VAR FORM_LANDROID>';
+var formlog = '<TMPL_VAR FORM_LOG>';
+
+var secpin = null;
+
+var nopidrefresh = "0";
+
+$(function() {
+	
+	if(secpin == null) {
+		console.log("Getting SecurePIN from session storage");
+		secpin = sessionStorage.getItem("securePIN");
+	}
+	if(secpin == null) {
+		console.log("SecurePIN is empty in session storage");
+		securePINwrong();
+	}
+
+	setInterval(function(){ update_pids(); }, 3000);
+	update_pids();
+
+	if (formupgrade) {
+		update_ver();
+	}
+
+	getconfig();
+	
+	// Check SecurePIN by ajax and load form data
+	$("#check_securepin").click(function(){
+		console.log("Check securepin called");
+		checkSecurePIN();
+	});
+
+});
+
+// Update PIDs
+function update_pids()
+{
+
+	if (nopidrefresh === "1") {
+		return;
+	}
+
+	$.ajax( {
+		type: 'POST',
+			data: {
+				ajax: 'getpids',
+				secpin: secpin
+			}
+		} )
+	.done(function(resp) {
+		console.log( "getpids", "success", resp );
+		if(resp.pids.bridge != null) {
+			$("#bridgestate").attr("style", "color:green").html("<TMPL_VAR COMMON.MSG_BRIDGE_RUNNING> (PID "+resp.pids.bridge+")");
+		} else {
+			$("#bridgestate").attr("style", "color:red").html("<TMPL_VAR COMMON.MSG_BRIDGE_NOTRUNNING>");
+		}
+	})
+	.fail(function(resp) {
+		$("#bridgestate").attr("style", "color:red").html("<TMPL_VAR COMMON.MSG_FAILED_PID>");
+	})
+	.always(function(resp) {
+		console.log( "getpids", "finished", resp );
+	});
+
+}
+
+// Update Lib Versions
+function update_ver()
+{
+	$("#currentversion").html("<TMPL_VAR COMMON.HINT_PLEASE_WAIT>");
+	$("#availableversion").html("<TMPL_VAR COMMON.HINT_PLEASE_WAIT>");
+
+	$.ajax( {
+		type: 'POST',
+			data: {
+				ajax: 'getversions',
+				secpin: secpin
+			}
+		} )
+	.done(function(resp) {
+		console.log( "getversions", "success", resp );
+		$("#currentversion").html(resp.versions.current);
+		$("#availableversion").html(resp.versions.available);
+		$(".UPGRADE").removeClass("ui-state-disabled");
+	})
+	.fail(function(resp) {
+		console.log( "getversions", "fail", resp );
+	})
+	.always(function(resp) {
+		console.log( "getversions", "finished", resp );
+	});
+
+}
+
+// Do Lib Upgrade
+function upgradeLib() {
+	$("#upgrade_hint").attr("style", "color:blue").html("<TMPL_VAR UPGRADE.HINT_SAVE_SAVING>");
+	console.log ("Upgrading Library");
+	$.ajax( { 
+			type: 'POST',
+			data: { 
+				ajax: 'upgradelib', 
+				secpin: secpin
+			}
+		} )
+	.fail(function( data ) {
+		console.log( "upgradelib Fail", data );
+		$("#upgrade_hint").attr("style", "color:red").html("<TMPL_VAR UPGRADE.HINT_SAVE_ERROR>: "+data.statusText);
+	})
+	.done(function( data ) {
+		console.log( "upgradelib Success: ", data );
+		if(data.secpinerror) {
+			securePINwrong();
+			return;
+		}
+		$("#upgrade_hint").attr("style", "color:green").html("<TMPL_VAR UPGRADE.HINT_SAVE_OK>");
+		update_ver();
+	})
+	.always(function( data ) {
+		console.log( "upgradelib Finished" );
+	});
+}
+
+// Save MQTT Settings
+function saveMQTT() {
+	$("#mqtt_hint").attr("style", "color:blue").html("<TMPL_VAR MQTT.HINT_SAVE_SAVING>");
+	console.log ("Saving");
+	$.ajax( { 
+			type: 'POST',
+			data: { 
+				ajax: 'savemqtt', 
+				topic: $('#topic').val(),
+				secpin: secpin
+			}
+		} )
+	.fail(function( data ) {
+		console.log( "savemqtt Fail", data );
+		$("#mqtt_hint").attr("style", "color:red").html("<TMPL_VAR MQTT.HINT_SAVE_ERROR>: "+data.statusText);
+	})
+	.done(function( data ) {
+		console.log( "savemqtt Success: ", data );
+		if(data.secpinerror) {
+			securePINwrong();
+			return;
+		}
+		$("#mqtt_hint").attr("style", "color:green").html("<TMPL_VAR MQTT.HINT_SAVE_OK>");
+		getconfig();
+	})
+	.always(function( data ) {
+		console.log( "savemqtt Finished" );
+	});
+}
+
+// Save LANDROID Settings
+function saveLANDROID() {
+	$("#landroid_hint").attr("style", "color:blue").html("<TMPL_VAR LANDROID.HINT_SAVE_SAVING>");
+	$.ajax( { 
+			type: 'POST',
+			data: { 
+				ajax: 'savelandroid', 
+				login: $('#login').val(),
+				password: $('#password').val(),
+				type: $('#type').val(),
+				serials: $('#serials').val(),
+				secpin: secpin
+			}
+		} )
+	.fail(function( data ) {
+		console.log( "savelandroid Fail", data );
+		$("#landroid_hint").attr("style", "color:red").html("<TMPL_VAR LANDROID.HINT_SAVE_ERROR>: "+data.statusText);
+	})
+	.done(function( data ) {
+		console.log( "savelandroid Success: ", data );
+		if(data.secpinerror) {
+			securePINwrong();
+			return;
+		}
+		$("#landroid_hint").attr("style", "color:green").html("<TMPL_VAR LANDROID.HINT_SAVE_OK>");
+		getconfig();
+	})
+	.always(function( data ) {
+		console.log( "savelandroid Finished" );
+	});
+}
+
+// SecurePIN
+function checkSecurePIN() {
+	console.log("Checking SecurePin");
+	$("#check_securepin").attr("disabled", true);
+	$("#check_hint").attr("style", "color:blue;").html("<TMPL_VAR SECUREPIN.CHECK_WAIT>");
+	$.ajax({ 
+			type: 'POST',
+			data: { ajax: 'checksecpin', secpin: $('#securepin').val() }
+	})
+	.fail(function( data ) {
+		securePINwrong();
+		return;
+	})
+	.done(function( data ) {
+		if( data.error && data.error != 0 ) {
+			console.log( "Error detected", data.error );
+			data.message = '<TMPL_VAR SECUREPIN.ERROR_WRONG>';
+			console.log( "Message:", data.message );
+			$("#check_hint").attr("style", "color:red").html(data.message);
+			secpin = null;
+			return;
+		}
+		// Save PIN to session storage
+		sessionStorage.setItem("securePIN", $('#securepin').val());
+		secpin = $('#securepin').val();
+		$("#securepin_block").fadeOut();
+		// Get config data
+		getconfig();
+		// $("#main_form").fadeIn();
+		
+	})
+	.always(function( data ) {
+		console.log( "checksecpin Finished" );
+		$("#check_securepin").attr("disabled", false);
+	});
+}
+
+function securePINwrong() {
+	console.log( "checksecpin Fail");
+	$("#check_hint").attr("style", "color:red").html("<TMPL_VAR SECUREPIN.ERROR_GENERIC>");
+	$("#securepin_block").fadeIn();
+	$("#main").css( 'visibility', 'hidden' );
+	return;
+}
+
+// Restart Bridge
+function restartBridge() {
+	console.log ("Restart Bridge");
+	$("#bridgestate").attr("style", "color:blue").html("<TMPL_VAR COMMON.MSG_BRIDGE_REFRESH>");
+	nopidrefresh = "1";
+	$.ajax( {
+			type: 'POST',
+			data: {
+				ajax: 'restartbridge',
+				secpin: secpin
+			}
+		} )
+	.fail(function( data ) {
+		console.log( "Restart Bridge Fail", data );
+	})
+	.done(function( data ) {
+		console.log( "Restart Bridge Success: ", data );
+		update_pids();
+	})
+	.always(function( data ) {
+		console.log( "Restart Bridge Finished" );
+		nopidrefresh = "0";
+	});
+}
+
+// Stop Bridge
+function stopBridge() {
+	console.log ("Stop Bridge");
+	$.ajax( {
+			type: 'POST',
+			data: {
+				ajax: 'stopbridge',
+				secpin: secpin
+			}
+		} )
+	.fail(function( data ) {
+		console.log( "Stop Bridge Fail", data );
+	})
+	.done(function( data ) {
+		console.log( "Stop Bridge Success: ", data );
+		update_pids();
+	})
+	.always(function( data ) {
+		console.log( "Stop Bridge Finished" );
+	});
+}
+
+// Get Config
+function getconfig() {
+	// Get Config
+	
+	if ( formlandroid ) {
+		console.log( "Get Config for Landroid form" );
+		var form = 'config'; // This will be changed to config.json later on in CGI
+	}
+	if ( formmqtt ) {
+		console.log( "Get Config for MQTT form" );
+		var form = 'config'; // This will be changed to config.json later on in CGI
+	}
+	if ( formlog ) {
+		console.log( "Get Config for form not needed" );
+		$("#main").css( 'visibility', 'visible' );
+		$("#securepin_block").css( 'display', 'none' );
+		// No need to fetch config
+		return;
+	}
+		
+	if ( secpin != null ) {
+		// Ajax request
+		$.ajax({ 
+			type: 'POST',
+			data: { ajax: 'getconfig', config: form, secpin: secpin }
+		})
+		.fail(function( data ) {
+			console.log( "getconfig Fail", data );
+		})
+		.done(function( data ) {
+			console.log( "getconfig Success", data );
+			if(data.secpinerror) {
+				securePINwrong();
+				return;
+			}
+			$("#main").css( 'visibility', 'visible' );
+
+			if ( formmqtt ) {
+				console.log( "Parse Item for MQTT form" );
+				// Fill the form with json data retrieved from the ajax getconfig call
+				if ( data.error || jQuery.isEmptyObject(data)) {
+					console.log("config.json is empty, does not exist or is invalid.");
+				}
+				if(data.mower[0].topic) {
+					$("#topic").val(data.mower[0].topic);
+				} else {
+					$("#topic").val('landroid');
+				}
+			};
+
+			if ( formlandroid ) {
+				console.log( "Parse Item for Landroid form" );
+				// Fill the form with json data retrieved from the ajax getconfig call
+				if ( data.error || jQuery.isEmptyObject(data)) {
+					console.log("config.json is empty, does not exist or is invalid.");
+				}
+				if(data.cloud.email) {
+					$("#login").val(data.cloud.email);
+				} else {
+					$("#login").val('');
+				}
+				if(data.cloud.pwd) {
+					$("#password").val(data.cloud.pwd);
+				} else {
+					$("#password").val('');
+				}
+				if (data.cloud.type === "worx") {
+					$("#type").val("worx").change();
+				} else if (data.cloud.type === "landxcape") {
+					$("#type").val("landxcape").change();
+				} else if (data.cloud.type === "kress") {
+					$("#type").val("kress").change();
+				} 
+				var serials = "";
+				$(data.mower).each(function(i,val) {
+					$.each(val, function(key, value) {
+						if (key === "sn") {
+							serials = serials + value + "\n";
+						}
+					});
+				});
+				serials = serials.replace(/\s+$/g, '');
+				$("#serials").val(serials.toString());
+				$("#serials").trigger('change');
+				$(".LANDROID").removeClass("ui-state-disabled");
+			};
+		})
+		.always(function( data ) {
+			console.log( "getconfig Finished" );
+		})
+	}
+}
+</script>
