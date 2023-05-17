@@ -24,8 +24,8 @@ devices = dict()
 mqttconfig = dict()
 deviceid = "";
 devicekey = "";
-devicename = "";
 deviceversion = "";
+devicename = "";
 deviceproductname = "";
 loglevel="ERROR"
 logfile=""
@@ -198,9 +198,9 @@ client.will_set(topic + "/running", str("0"), 0, True)
 client.connected_flag=False
 client.on_connect = on_connect
 if mqttconfig['username'] and mqttconfig['password']:
-	log.info("Using MQTT Username and password.")
+	log.info("MQTT: Using MQTT Username and password.")
 	client.username_pw_set(username = mqttconfig['username'],password = mqttconfig['password'])
-log.info("Connecting to Broker %s on port %s." % (mqttconfig['server'], str(mqttconfig['port'])))
+log.info("MQTT: Connecting to Broker %s on port %s." % (mqttconfig['server'], str(mqttconfig['port'])))
 client.connect(mqttconfig['server'], port = int(mqttconfig['port']))
 
 # Subscribe to the set/command topic
@@ -237,50 +237,22 @@ if devicekey == "":
 	sys.exit(2)
 
 # Create socket to device
-d = tinytuya.OutletDevice(deviceid, 'Auto', devicekey)
-d.set_version(float(deviceversion))
-d.set_socketPersistent(True)
+#d = tinytuya.OutletDevice(deviceid, 'Auto', devicekey)
+#d.set_version(3.3)
+#d.set_socketPersistent(False)
 
-# Get status
-log.info("Send Request for Status")
-payload = d.generate_payload(tinytuya.DP_QUERY)
-d.send(payload)
-cdata = d.receive()
-while cdata is None: #wait in loop
-	log.info("Wait for first status data set...")
-	d.send(payload)
-	cdata = d.receive()
-	time.sleep(1)
-	counter+=1
-	if counter > 60:
-		log.critical("Cannot get first status data set.")
-		sys.exit(2)
-log.info('Complete received Payload: %r' % cdata)
-send = copy.deepcopy(cdata)
-keysList = list(send['dps'].keys())
-for i in keysList:
-	newname = ""
-	for j in dconfig['primary_entity']['dps']:
-		if str(j['id']) == str(i):
-			newname = j['name']
-			break
-	if newname != "":
-		send['dps'][newname] = send['dps'].pop(i)
-log.info('Complete data to send: %r' % send)
-log.info('Raw Complete data to send: %r' % cdata)
-client.publish(topic + "/status", json.dumps(send), retain=1)
-client.publish(topic + "/status_raw", json.dumps(cdata), retain=1)
-client.publish(topic + "/last", str(int(time.time())), retain=1)
 
 #############################################################################
 #  Loop
 #############################################################################
 
 log.info("Begin Monitor Loop")
+last = 0
 while(True):
 
-	# Check for any subscribed messages in the queue
+	now = time.time()
 	update = 0
+	# Check for any subscribed messages in the queue
 	while not q.empty():
 		message = q.get()
 		if message is None or str(message.payload.decode("utf-8")) == "0":
@@ -316,24 +288,23 @@ while(True):
 				log.error("Command seems not to be valid. dpsKey %s dpsValue %s" % (str(dpsKey),str(dpsValue)))
 				continue
 			# Send set to device
+			d = tinytuya.OutletDevice(deviceid, 'Auto', devicekey)
+			d.set_version(float(deviceversion))
 			d.set_value(dpsKey,dpsValue,nowait=True)
+			d.close()
 			update = 1
 			# Reset command
 			client.publish(topic + "/set/command","0",retain=1)
 			client.publish(topic + "/set/lastcommand",str(message.payload.decode("utf-8")),retain=1)
 
-	# Update if COmmand was send
-	if update > 0:
-		payload = d.generate_payload(tinytuya.DP_QUERY)
-		d.send(payload)
+	# Get status
+	if last + 60 < now or update == 1:
 
-	# See if any data is available
-	data = d.receive()
-	log.info('Received Payload: %r' % data)
-	if data is not None:
-		keysList = list(data['dps'].keys())
-		for i in keysList:
-			cdata['dps'][i] = data['dps'][i]
+		last = time.time()
+		log.info("Send Request for Status")
+		d = tinytuya.OutletDevice(deviceid, 'Auto', devicekey)
+		d.set_version(float(deviceversion))
+		cdata = d.status()
 		log.info('Complete received Payload: %r' % cdata)
 		send = copy.deepcopy(cdata)
 		keysList = list(send['dps'].keys())
@@ -341,16 +312,17 @@ while(True):
 			newname = ""
 			for j in dconfig['primary_entity']['dps']:
 				if str(j['id']) == str(i):
-					newname = str(j['name'])
+					newname = j['name']
 					break
 			if newname != "":
 				send['dps'][newname] = send['dps'].pop(i)
 		log.info('Complete data to send: %r' % send)
+		log.info('Raw Complete data to send: %r' % cdata)
 		client.publish(topic + "/status", json.dumps(send), retain=1)
 		client.publish(topic + "/status_raw", json.dumps(cdata), retain=1)
 		client.publish(topic + "/last", str(int(time.time())), retain=1)
+		d.close()
+		update = 0
 
-	# Send keyalive heartbeat
-	log.info("Send Heartbeat Ping")
-	payload = d.generate_payload(tinytuya.HEART_BEAT)
-	d.send(payload)
+	# Slow down
+	time.sleep(0.1)
