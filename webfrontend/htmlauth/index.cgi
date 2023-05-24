@@ -265,7 +265,7 @@ sub form_print
 	$navbar{99}{active} = 1 if $q->{form} eq "log";
 	
 	# Template
-	LoxBerry::Web::lbheader($L{'COMMON.LABEL_PLUGINTITLE'} . " V$version", "https://wiki.loxberry.de/plugins/worx_landroid-ng/start", "");
+	LoxBerry::Web::lbheader($L{'COMMON.LABEL_PLUGINTITLE'} . " V$version", "https://wiki.loxberry.de/plugins/poolex/start", "");
 	print $template->output();
 	LoxBerry::Web::lbfooter();
 	
