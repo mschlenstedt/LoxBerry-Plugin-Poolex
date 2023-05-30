@@ -10,7 +10,7 @@ use strict;
 #use Data::Dumper;
 
 # Version of this script
-my $version = "0.1.0";
+my $version = "0.1.1";
 
 # Globals
 my $error;
@@ -122,7 +122,7 @@ sub start
 	my $bridgelogfile = $logtwo->filename();
 	system ("pkill -f $lbpbindir/bridge.py");
 	sleep 2;
-	system ("python3 $lbpbindir/bridge.py --logfile=$bridgelogfile --loglevel=$loglevel 2>&1 &");
+	system ("cd $lbpbindir && python3 $lbpbindir/bridge.py --logfile=$bridgelogfile --loglevel=$loglevel 2>&1 &");
 
 	LOGOK "Done.";
 
